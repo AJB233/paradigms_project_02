@@ -1,19 +1,6 @@
 % =========================================
 % CS4337 Project 2 - Maze Solver in Prolog
 % Author: Arath Brosig
-%
-% Main goal:
-%   find_exit(+Maze, ?Actions)
-%
-% Maze:
-%   - A list of rows, each being a list of cells.
-%   - Cells: f (floor), w (wall), s (start), e (exit).
-%
-% Actions:
-%   - A list of moves: left, right, up, down.
-%
-% This file currently contains scaffolding only.
-% We will fill in each predicate step-by-step.
 % =========================================
 
 % -----------------------------------------
@@ -22,10 +9,11 @@
 
 % find_exit(+Maze, ?Actions)
 %  - Succeeds if Actions leads from 's' to an 'e'.
-%  - If Actions is unbound, will eventually generate solutions (once implemented).
-find_exit(_Maze, _Actions) :-
-    % TODO: implement full solver
-    fail.
+%  - If Actions is unbound, Prolog can generate valid action lists.
+find_exit(Maze, Actions) :-
+    valid_maze(Maze),
+    start_position(Maze, StartRow, StartCol),
+    follow_actions(Maze, StartRow, StartCol, Actions).
 
 % Convenience wrapper:
 % allows queries like: find_exit(Maze).
@@ -33,7 +21,7 @@ find_exit(Maze) :-
     find_exit(Maze, _).
 
 % -----------------------------------------
-% Maze validation (to be implemented)
+% Maze validation
 % -----------------------------------------
 
 % valid_maze(+Maze)
@@ -89,28 +77,34 @@ exit_position(Maze, Row, Col) :-
     cell(Maze, Row, Col, e).
 
 % -----------------------------------------
-% Movement and legality (to be implemented)
+% Movement and legality
 % -----------------------------------------
 
 % step(+Action, +Row, +Col, -NewRow, -NewCol)
-%  - Will define how each action changes coordinates.
-step(_Action, _Row, _Col, _NewRow, _NewCol) :-
-    % TODO: implement
-    fail.
+% Actions: left, right, up, down.
+step(left,  Row, Col, Row, NewCol) :- NewCol is Col - 1.
+step(right, Row, Col, Row, NewCol) :- NewCol is Col + 1.
+step(up,    Row, Col, NewRow, Col) :- NewRow is Row - 1.
+step(down,  Row, Col, NewRow, Col) :- NewRow is Row + 1.
 
 % legal_position(+Maze, +Row, +Col)
-%  - Will check bounds and walls ('w').
-legal_position(_Maze, _Row, _Col) :-
-    % TODO: implement
-    fail.
-
-% -----------------------------------------
-% Following actions (to be implemented)
-% -----------------------------------------
+% True if (Row,Col) is inside the maze and not a wall 'w'.
+legal_position(Maze, Row, Col) :-
+    Row >= 0,
+    Col >= 0,
+    cell(Maze, Row, Col, Cell),  % fails if out-of-bounds
+    Cell \= w.
 
 % follow_actions(+Maze, +Row, +Col, +Actions)
-%  - Will apply Actions starting at (Row,Col)
-%    and succeed if the final cell is 'e'.
-follow_actions(_Maze, _Row, _Col, _Actions) :-
-    % TODO: implement
-    fail.
+% Succeeds if applying Actions starting at (Row,Col)
+% ends on a cell marked 'e'.
+
+% Base case: no actions left; must be on an exit.
+follow_actions(Maze, Row, Col, []) :-
+    cell(Maze, Row, Col, e).
+
+% Recursive case: apply one action, check legality, then continue.
+follow_actions(Maze, Row, Col, [Action|Rest]) :-
+    step(Action, Row, Col, NewRow, NewCol),
+    legal_position(Maze, NewRow, NewCol),
+    follow_actions(Maze, NewRow, NewCol, Rest).

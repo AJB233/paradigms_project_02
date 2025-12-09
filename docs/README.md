@@ -9,7 +9,7 @@ It determines whether a sequence of actions leads from the start `s` to an exit 
 
 ## Structure
 
-- `src/project2.pl` — your implementation.
+- `src/project2.pl` — implementation.
 - `src/example.pl` — sample mazes and display predicates.
 - `src/test.pl` — random maze generator.
 - `test/sample-run.txt` — expected test output.

@@ -53,3 +53,26 @@ Implement `valid_maze/1` and `start_position/3` so the program can:
 **Next Steps:**
 - Implement movement logic via `step/5` and `legal_position/3`.
 - Implement `follow_actions/4` and wire it into `find_exit/2` so that action lists can be verified and eventually generated.
+
+### Movement, Legality, and Action Following
+
+**Date:** December 8, 2025  
+**Goal:** Implement movement rules and path simulation over the maze.
+
+**Process:**
+- Implemented `step/5` to translate actions (left, right, up, down) into row/column deltas.
+- Implemented `legal_position/3` to ensure moves stay within bounds and avoid walls (`w`).
+- Implemented `follow_actions/4`:
+  - Base case: with no actions left, current cell must be an exit (`e`).
+  - Recursive case: apply one action via `step/5`, check `legal_position/3`, and recurse.
+- Updated `find_exit/2` to:
+  - Validate the maze via `valid_maze/1`.
+  - Locate the start position via `start_position/3`.
+  - Use `follow_actions/4` to simulate the `Actions` list from the start.
+- Tested:
+  - `simple_map/1` with `[right,right]` (success) and invalid lists (fail).
+  - `basic_map/1` with paths that reach the exit and paths that hit walls or go out of bounds.
+
+**Next Steps:**
+- Enable full Prolog-style generation of `Actions` when unbound, and test with `gen_map/4` for random mazes.
+- Polish comments and prepare for final demonstration / sample run.
