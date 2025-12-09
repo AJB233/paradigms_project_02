@@ -1,0 +1,34 @@
+% Sample run for CS4337 Project 2 - Prolog Maze Solver
+
+?- [src/example].
+true.
+
+?- [src/test].
+true.
+
+?- [src/project2].
+true.
+
+% --- Simple map test ---
+?- simple_map(M), display_map(M), find_exit(M, Actions).
+M = [[s, f, e]]
+Actions = [right, right] ;
+false.
+
+% --- Basic map test ---
+?- basic_map(M), display_map(M), find_exit(M, Actions).
+M = [[w, s, w],
+     [f, f, w],
+     [e, w, w]]
+Actions = [down, down, left] ;
+...
+
+% --- Bounded search example ---
+?- basic_map(M), find_exit_upto(M, 4, Actions).
+Actions = [down, down, left] ;
+false.
+
+% --- Random map example ---
+?- gen_map(4, 10, 10, M), display_map(M), find_exit_upto(M, 20, Actions).
+M = ...
+Actions = [...]

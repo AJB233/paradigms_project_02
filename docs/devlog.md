@@ -88,3 +88,26 @@ Implement `valid_maze/1` and `start_position/3` so the program can:
 - Added `maze_max_path_length/2` to estimate a reasonable maximum path length as `Rows * Cols`.
 
 **Result:** `find_exit/2` now safely supports both verification and generation, even for random mazes generated with `gen_map/4`, without overflowing the stack.
+
+### Generating Actions and Random Maze Testing
+
+**Date:** December 9, 2025  
+**Goal:** Use Prolog's backtracking to generate valid action sequences and test with random mazes.
+
+**Process:**
+- Confirmed that `find_exit/2` works in two modes:
+  - Verification: given a specific `Actions` list, check if it reaches an exit.
+  - Generation: with `Actions` unbound, Prolog enumerates action lists via backtracking.
+- Created helper predicates:
+  - `find_exit_with_length/3` to constrain paths to a specific length.
+  - `find_exit_upto/3` to search all paths up to a given maximum length.
+- Tested:
+  - `simple_map/1` and `basic_map/1` with generated `Actions`.
+  - `gen_map/4` from `test.pl` with length-bounded search for random mazes.
+- Added `test/sample-run.txt` documenting typical queries and expected behavior.
+
+**Reflection:**
+The solver now behaves like a proper search procedure: it can both verify and synthesize paths. Bounded search is important to prevent nontermination on large or unsolvable mazes, especially when using randomly generated maps.
+
+**Next Steps:**
+- Final polish: comments, README updates, and preparing the project for submission (zipping repo, pushing to GitHub).

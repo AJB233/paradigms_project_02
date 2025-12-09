@@ -118,7 +118,7 @@ follow_actions(Maze, Row, Col, [Action|Rest]) :-
     follow_actions(Maze, NewRow, NewCol, Rest).
 
 % ----------------------------------
-% Helper
+% Helpers
 % ----------------------------------
 
 % maze_max_path_length(+Maze, -MaxLen)
@@ -128,3 +128,21 @@ maze_max_path_length(Maze, MaxLen) :-
     Maze = [FirstRow|_],
     length(FirstRow, Cols),
     MaxLen is Rows * Cols.
+
+% -----------------------------------------
+% Optional: bounded search helpers
+% -----------------------------------------
+
+% find_exit_with_length(+Maze, +Len, -Actions)
+% Only considers action lists of exactly length Len.
+find_exit_with_length(Maze, Len, Actions) :-
+    valid_maze(Maze),
+    start_position(Maze, Row, Col),
+    length(Actions, Len),
+    follow_actions(Maze, Row, Col, Actions).
+
+% find_exit_upto(+Maze, +MaxLen, -Actions)
+% Tries lengths from 0 up to MaxLen.
+find_exit_upto(Maze, MaxLen, Actions) :-
+    between(0, MaxLen, Len),
+    find_exit_with_length(Maze, Len, Actions).
