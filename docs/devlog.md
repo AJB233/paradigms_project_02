@@ -76,3 +76,15 @@ Implement `valid_maze/1` and `start_position/3` so the program can:
 **Next Steps:**
 - Enable full Prolog-style generation of `Actions` when unbound, and test with `gen_map/4` for random mazes.
 - Polish comments and prepare for final demonstration / sample run.
+
+### [Bugfix] Prevented Unbounded Action Generation
+
+**Issue:** Calling `find_exit(Maze, Actions)` with `Actions` unbound caused Prolog to explore action lists of unbounded length, leading to stack overflow.
+
+**Fix:**
+- Updated `find_exit/2` to:
+  - If `Actions` is nonvar: simply verify via `follow_actions/4`.
+  - If `Actions` is var: compute a max path length using `maze_max_path_length/2`, then use `between/3` and `length/2` to bound search.
+- Added `maze_max_path_length/2` to estimate a reasonable maximum path length as `Rows * Cols`.
+
+**Result:** `find_exit/2` now safely supports both verification and generation, even for random mazes generated with `gen_map/4`, without overflowing the stack.

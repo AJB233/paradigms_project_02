@@ -13,7 +13,15 @@
 find_exit(Maze, Actions) :-
     valid_maze(Maze),
     start_position(Maze, StartRow, StartCol),
-    follow_actions(Maze, StartRow, StartCol, Actions).
+    ( nonvar(Actions) ->
+        % Check a specific action list
+        follow_actions(Maze, StartRow, StartCol, Actions)
+    ;   % Generate actions with bounded length
+        maze_max_path_length(Maze, MaxLen),
+        between(0, MaxLen, Len),
+        length(Actions, Len),
+        follow_actions(Maze, StartRow, StartCol, Actions)
+    ).
 
 % Convenience wrapper:
 % allows queries like: find_exit(Maze).
@@ -108,3 +116,15 @@ follow_actions(Maze, Row, Col, [Action|Rest]) :-
     step(Action, Row, Col, NewRow, NewCol),
     legal_position(Maze, NewRow, NewCol),
     follow_actions(Maze, NewRow, NewCol, Rest).
+
+% ----------------------------------
+% Helper
+% ----------------------------------
+
+% maze_max_path_length(+Maze, -MaxLen)
+% Simple upper bound: number of cells in the maze.
+maze_max_path_length(Maze, MaxLen) :-
+    length(Maze, Rows),
+    Maze = [FirstRow|_],
+    length(FirstRow, Cols),
+    MaxLen is Rows * Cols.
